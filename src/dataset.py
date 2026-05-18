@@ -2,6 +2,7 @@ import torch
 import torchvision
 import config as c 
 from torch.utils.data import TensorDataset, DataLoader, Dataset
+import torchvision.transforms.functional as TF
 from PIL import Image
 import pandas as pd
 import os
@@ -15,7 +16,7 @@ class SkinLesionDataset(Dataset):
         self.img_path = ""
 
         #Paths
-        self.csv_path = os.path.join(c.DATA_PATH, 'HAM1000_metadata.csv')
+        self.csv_path = os.path.join(c.DATA_PATH, 'HAM10000_metadata.csv')
         self.img1_path = os.path.join(c.DATA_PATH, 'HAM10000_images_part_1')
         self.img2_path = os.path.join(c.DATA_PATH, 'HAM10000_images_part_2')
 
@@ -38,7 +39,7 @@ class SkinLesionDataset(Dataset):
             else: 
                 img_path = path_part2
 
-            self.mask_path = os.path.join(c.MASKS_PATH, mask_filename)
+            mask_path = os.path.join(c.MASKS_PATH, mask_filename)
 
             pair = (img_path, mask_path)
             self.pairs.append((pair))
@@ -51,11 +52,15 @@ class SkinLesionDataset(Dataset):
         #Given an index, returns a sample (image, mask)
         img_path, mask_path = self.pairs[index]
 
+        #Open the image and mask, apply transforms, convert to tensor and return
         img = Image.open(img_path).convert('RGB') #color img
-        mask = Image.open(mask_path).convert('L') #Gray scale
+        img = TF.resize(img, (c.IMAGE_SIZE, c.IMAGE_SIZE))
 
-        torchIMG = torchvision.transforms.functional.to_tensor(img)
-        torchMask = torchvision.transforms.functional.to_tensor(mask)
+        mask = Image.open(mask_path).convert('L') #Gray scale
+        mask = TF.resize(mask, (c.IMAGE_SIZE, c.IMAGE_SIZE))
+
+        torchIMG = TF.to_tensor(img)
+        torchMask = TF.to_tensor(mask)
 
         torchPair = (torchIMG, torchMask)
 
