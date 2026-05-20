@@ -1,3 +1,5 @@
+import torch
+
 """ Rutas a los datos """
 # Cambiar dependiendo de donde se encuentren los datos en tu máquina
 DATA_PATH = r"C:\Users\CARLOS\WoundSegmentation\data"
@@ -15,3 +17,5 @@ NUM_EPOCHS = 10
 
 """ Parámetros de la imagen """
 IMAGE_SIZE = 256
+
+DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
