@@ -11,6 +11,7 @@ BATCH_SIZE = 16
 TRAIN_SPLIT = 0.8
 VAL_SPLIT = 0.1
 TEST_SPLIT = 0.1
+NUM_EPOCHS = 10
 
 """ Parámetros de la imagen """
 IMAGE_SIZE = 256
